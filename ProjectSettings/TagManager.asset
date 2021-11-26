@@ -7,6 +7,8 @@ TagManager:
   - Enemy
   - Weapon
   - Wall
+  - Button
+  - Spawner
   layers:
   - Default
   - TransparentFX
@@ -22,7 +24,7 @@ TagManager:
   - Environment
   - Ground
   - Hidden Trigger
-  - 
+  - weapon
   - 
   - 
   - 

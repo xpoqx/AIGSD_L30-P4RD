@@ -6,24 +6,32 @@ public class Bullet : MonoBehaviour
 {
     bool isFire;
     Vector3 direction;
-    [SerializeField]
-    float speed = 25f;
+    //[SerializeField]
+
+    float speed;
     float power;
 
     float damage;
     float size;
+    float rpm;
 
-    public void Setdata(float pow,float dam,float siz)
+    Transform _playertf;
+
+    public void Setdata(float pow,float dam,float siz, float wrpm,GameObject playerOBJECT)
     {
         power = pow;
         damage = dam;
         size = siz;
+        rpm = wrpm;
+        _playertf =playerOBJECT.transform;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        speed = 45f;
         Destroy(gameObject, 2f);
+        //transform.rotation = _playertf.rotation;
     }
 
     // Update is called once per frame
@@ -51,7 +59,9 @@ public class Bullet : MonoBehaviour
         if (other.tag == "Enemy")
         {
             other.gameObject.GetComponent<EnemyScript>().Getknockback(direction,power);
+            other.gameObject.GetComponent<EnemyScript>().GetPlayerobject(_playertf);
             other.gameObject.GetComponent<EnemyScript>().GetDamage(damage);
+            
         }
     }
 }
