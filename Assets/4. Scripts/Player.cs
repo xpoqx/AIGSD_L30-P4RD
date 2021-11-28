@@ -193,7 +193,7 @@ namespace _4._Scripts
                 }
                 if (_Dashcd < 0.65) 
                 {
-                    _moveSpeed = UserData.MoveSpeed * 0.7f; // AI 테스트용으로 임시로 4배속 걸어놓음
+                    _moveSpeed = UserData.MoveSpeed * 1.2f; // AI 테스트용으로 임시로 4배속 걸어놓음
                 }
                 Dash();
 

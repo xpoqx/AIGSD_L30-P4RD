@@ -216,7 +216,7 @@ public class EnemyScript : MonoBehaviour
 
         _noise = 0;
         _meleecd = 1f; // 근접공격 쿨타임
-        range = 10f; // 기본 감지범위 (추격은 _range 로 넘겨준 다음 -5 + noise / 10 에 해당하는 범위안에서만 추격.)
+        range = 300f; // 기본 감지범위 (추격은 _range 로 넘겨준 다음 -5 + noise / 10 에 해당하는 범위안에서만 추격.)
 
         originpos = transform.position;
 
