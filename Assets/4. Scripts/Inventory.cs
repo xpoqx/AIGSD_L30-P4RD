@@ -7,6 +7,7 @@ namespace _4._Scripts
     {
         public bool isOpen;
         [SerializeField] private GameObject myInventory;
+        
 
         private void Start()
         {

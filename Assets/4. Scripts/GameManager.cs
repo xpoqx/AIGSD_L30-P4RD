@@ -13,10 +13,22 @@ namespace _4._Scripts
         private int spawnerAmount;
         // 이후 수정 예정
         [SerializeField] private Inventory inventory;
+        [SerializeField] public GameObject TempleSpawners,MapSpawners;
 
         void Start()
         {
-            // 스포너를 맵에 뿌리는 단계 
+            for (int a = 0; a < MapSpawners.transform.childCount; a++)
+            {
+                var spawnscript=MapSpawners.transform.GetChild(a).GetComponent<SpawnerScript>();
+                spawnscript.SetAmount(2);
+            }
+            for (int a = 0; a < TempleSpawners.transform.childCount; a++)
+            {
+                var spawnscript=TempleSpawners.transform.GetChild(a).GetComponent<SpawnerScript>();
+                spawnscript.SetAmount(0);
+            }
+            
+            // 스포너를 맵에 뿌리는 단계 , 미궁 혹은 다른 모드에서 사용
             {
                 bool NearSpawner = false;
                 // 정해준 수량만큼만 맵 랜덤좌표에 생성.

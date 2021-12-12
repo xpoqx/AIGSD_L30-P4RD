@@ -49,7 +49,8 @@ MonoBehaviour:
   EnemyPrefab: {fileID: 4333269708229020365, guid: dd8eed5a687ec1745957d48dcb741866,
     type: 3}
   NearSpawn: 0
-  spawn_amount: 5
+  spawn_amount: 0
+  EnemiesFromThis: []
 --- !u!65 &6730244183767844908
 BoxCollider:
   m_ObjectHideFlags: 0

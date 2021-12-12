@@ -7,7 +7,7 @@ public class EnemyScript : MonoBehaviour
     private float _moveSpeed;
     Transform target, targetbyattack; // 인식 범위 안 타겟 / 고정용 타겟 
     float _noise, _range, range, _distance;
-    float hp, armor;
+    float hp,maxhp, armor;
 
     Vector3 originpos, _direction, _walldir;
     Transform _waypoint2, _meleeweapon;
@@ -31,7 +31,10 @@ public class EnemyScript : MonoBehaviour
     public GameObject rp, MeleePrefab;
 
     public Animator animator;
-    
+
+    public bool chasing; // 적이 현재 플레이어를 쫓아가고있는가?
+    public float lastdamagedtime; // 마지막으로 공격받은 시점부터 지난 시간 
+
     void MeleeAttack() // 일단 플레이어 Melee랑 거의 동일하게 사용. 공격대상만 Player 
     {
         if (_meleecd <= 0)
@@ -201,6 +204,8 @@ public class EnemyScript : MonoBehaviour
                 }
             }
         }
+
+        lastdamagedtime = 0;
     }
 
     public void GetPlayerobject(Transform playertf) // 플레이어 오브젝트 확보(받기)
@@ -208,19 +213,50 @@ public class EnemyScript : MonoBehaviour
         targetbyattack = playertf.transform;
     }
 
+    public void Lowhp()
+    {
+        Collider[] cols = Physics.OverlapSphere(transform.position, range);
+        if (cols.Length > 0)
+        {
+            for (int i = 0; i < cols.Length; i++)
+            {
+                if (cols[i].tag == "Player")
+                {
+                    Vector3 direct = transform.position - cols[i].transform.position;
+                    transform.LookAt(transform.position+direct);
+                    playerRigid.MovePosition((transform.position + (direct.normalized * Time.deltaTime * _moveSpeed)));
+                }
+            }
+        }
+    }
+
+    public int Ischasing()
+    {
+        if (chasing)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+        
+    }
+
     void Start()
     {
+        
         playerRigid = GetComponent<Rigidbody>();
 
         _moveSpeed = 10f; // 적 이동속도
 
         _noise = 0;
         _meleecd = 1f; // 근접공격 쿨타임
-        range = 300f; // 기본 감지범위 (추격은 _range 로 넘겨준 다음 -5 + noise / 10 에 해당하는 범위안에서만 추격.)
+        range = 10f; // 기본 감지범위 (추격은 _range 로 넘겨준 다음 -5 + noise / 10 에 해당하는 범위안에서만 추격.)
 
         originpos = transform.position;
-
-        hp = 100f; // 현재는 체력바가 체력이 많을수록 무한히 늘어남
+        maxhp = 100f;
+        hp = maxhp; // 현재는 체력바가 체력이 많을수록 무한히 늘어남
         armor = 100f; // 미사용
 
         layerMask = 1 << LayerMask.NameToLayer("Environment"); // 벽만 인식하기위한 레이어마스크
@@ -229,6 +265,7 @@ public class EnemyScript : MonoBehaviour
         NearPlayer = false; // 주변에 Player가 없을 때 배회(Roaming)하기위한 변수
 
         animator = transform.GetChild(1).GetComponent<Animator>();
+        lastdamagedtime = 0;
     }
 
     void Targeted() // 플레이어를 발견한 뒤 쫓아오는 단계
@@ -259,6 +296,7 @@ public class EnemyScript : MonoBehaviour
             {
                 if (_distance < (_range - 5f) / 1.4f)
                 {
+                    _moveSpeed = 3f;
                     Goattack_BehindWall();
                 }
             }
@@ -268,54 +306,91 @@ public class EnemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        NearPlayer = false;
-        // 공격이나 주변 적으로부터 타겟(플레이어) 직접 전달 없을 때
-        if (targetbyattack == null)
+        if (lastdamagedtime < 5f)
         {
-            if (_range > range)
-            {
-                _range -= Time.deltaTime;
-            }
-            _range = range;
-            Collider[] cols = Physics.OverlapSphere(transform.position, _range);
-            if (cols.Length > 0)
-            {
-                for (int i = 0; i < cols.Length; i++)
-                {
-                    if (cols[i].tag == "Player")
-                    {
-                        NearPlayer = true;
-                        target = cols[i].gameObject.transform;
-                        // 플레이어가 가진(발생시킨) noise를 지속적으로 감지.
-                        // noise는 Player스크립트 내에서 지속적으로 감소해서 적도 인식하다가 멈출 수 있음
-                        _noise = cols[i].gameObject.GetComponent<_4._Scripts.Player>().GetNoise();
-
-                        // 기본 범위(range)와 그냥 비교해서 더 크면 노이즈/10 만큼 일시적으로 추격범위(_range) 증가
-                        if (_noise > range) { _range = range + (_noise / 10); }
-
-                        //플레이어와의 거리(_distance)가 추격범위(_range-5) 이내로 들어오면 상황에따라 추격 함수들 실행
-                        _direction = transform.position - target.position;
-                        _distance = _direction.magnitude;
-                        if (_distance < _range - 5f)
-                        {
-                            transform.LookAt(target);
-                            Targeted();
-                        }
-                    }
-
-                }
-            }
-
+            lastdamagedtime += Time.deltaTime;
         }
-        //직접적인 플레이어 전달 있을 때 (피격 또는 주변 적으로부터)
         else
         {
-            NearPlayer = true;
-            _direction = transform.position - targetbyattack.position;
-            _distance = _direction.magnitude;
-            transform.LookAt(targetbyattack);
-            Targeted();
+            if (hp < maxhp - 20f)
+            {
+                hp += Time.deltaTime*30f;
+            }
         }
+        
+        chasing = false;
+        NearPlayer = false;
+        // 공격이나 주변 적으로부터 타겟(플레이어) 직접 전달 없을 때
+        if (hp < 20)
+        {
+            NearPlayer = true;
+            Lowhp();
+        }
+        else
+        {
+            if (targetbyattack == null)
+            {
+                if (_range > range)
+                {
+                    _range -= Time.deltaTime;
+                }
+                _range = range;
+                Collider[] cols = Physics.OverlapSphere(transform.position, _range);
+                if (cols.Length > 0)
+                {
+                    int enemychasingplayer = 0;
+                    for (int i = 0; i < cols.Length; i++)
+                    {
+                        if (cols[i].tag == "Enemy")
+                        {
+                            enemychasingplayer += cols[i].GetComponent<EnemyScript>().Ischasing();
+                        }
+                        if (cols[i].tag == "Player")
+                        {
+                            NearPlayer = true;
+                            target = cols[i].gameObject.transform;
+                            // 플레이어가 가진(발생시킨) noise를 지속적으로 감지.
+                            // noise는 Player스크립트 내에서 지속적으로 감소해서 적도 인식하다가 멈출 수 있음
+                            _noise = cols[i].gameObject.GetComponent<_4._Scripts.Player>().GetNoise();
+
+                            // 기본 범위(range)와 그냥 비교해서 더 크면 노이즈/10 만큼 일시적으로 추격범위(_range) 증가
+                            if (_noise > range) { _range = range + (_noise / 10); }
+
+                            //플레이어와의 거리(_distance)가 추격범위(_range-5) 이내로 들어오면 상황에따라 추격 함수들 실행
+                            _direction = transform.position - target.position;
+                            _distance = _direction.magnitude;
+                            if (_distance < _range - 5f)
+                            {
+                                if (enemychasingplayer > 7)
+                                {
+                                    _moveSpeed = 2f;
+                                }
+                                else
+                                {
+                                    _moveSpeed = 5f;
+                                }
+                                transform.LookAt(target);
+                                Targeted();
+                                chasing = true;
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            //직접적인 플레이어 전달 있을 때 (피격 또는 주변 적으로부터)
+            else
+            {
+                NearPlayer = true;
+                chasing = true;
+                _direction = transform.position - targetbyattack.position;
+                _distance = _direction.magnitude;
+                transform.LookAt(targetbyattack);
+                Targeted();
+            }
+        }
+        
 
         // 주변에 아무도 없고 타게팅도 안됐을 때, 배회
         if (NearPlayer == false) 
@@ -342,6 +417,7 @@ public class EnemyScript : MonoBehaviour
             Destroy(transform.parent.gameObject,1f);
             Destroy(transform.parent.GetChild(1).gameObject);
             Destroy(gameObject);
+            targetbyattack.GetComponent<_4._Scripts.Player>().GetAmmo(); // 적이 죽으면 플레이어 랜덤수량 총알 획득
             if (_meleeweapon != null)
             {
                 Destroy(_meleeweapon.gameObject);

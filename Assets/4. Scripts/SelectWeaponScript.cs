@@ -71,7 +71,7 @@ public class SelectWeaponScript : MonoBehaviour
                     
                     W_DAMAGE =48f;
                     W_POWER =100f;
-                    W_RPM =1f;
+                    W_RPM =0.8f;
                     W_NOISE = 35f;
                     w_Selected = 0;
                     
@@ -84,7 +84,7 @@ public class SelectWeaponScript : MonoBehaviour
                     }
                     W_DAMAGE = 18f;
                     W_POWER = 180f;
-                    W_RPM = 0.25f;
+                    W_RPM = 0.33f;
                     W_NOISE = 20f;
                     w_Selected = 1;
                     
@@ -97,7 +97,7 @@ public class SelectWeaponScript : MonoBehaviour
                     }
                     W_DAMAGE = 32f;
                     W_POWER = 75f;
-                    W_RPM = 0.1f;
+                    W_RPM = 0.125f;
                     W_NOISE = 40f;
                     w_Selected = 2;
                 }
@@ -109,7 +109,7 @@ public class SelectWeaponScript : MonoBehaviour
                     }
                     W_DAMAGE = 81f;
                     W_POWER = 250f;
-                    W_RPM = 2f;
+                    W_RPM = 1.5f;
                     W_NOISE = 45f;
                     w_Selected = 3;
                 }
