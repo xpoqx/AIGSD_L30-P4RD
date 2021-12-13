@@ -15,21 +15,40 @@ namespace _4._Scripts
         [SerializeField] private Inventory inventory;
         [SerializeField] public GameObject TempleSpawners,MapSpawners;
 
+        public void PlayerEnteredTemple()
+        {
+            TempleSpawners.SetActive(true);
+            for (int a = 0; a < TempleSpawners.transform.childCount; a++)
+            {
+                TempleSpawners.transform.GetChild(a).gameObject.SetActive(true);
+                var spawnscript=TempleSpawners.transform.GetChild(a).GetComponent<SpawnerScript>();
+                spawnscript.DelayedDestroy(15f);
+            }
+        }
+        
         void Start()
         {
             for (int a = 0; a < MapSpawners.transform.childCount; a++)
             {
                 var spawnscript=MapSpawners.transform.GetChild(a).GetComponent<SpawnerScript>();
                 spawnscript.SetAmount(2);
+                spawnscript.isCrystal = true;
+                spawnscript.infSpawn = false;
             }
+            TempleSpawners.SetActive(false);
             for (int a = 0; a < TempleSpawners.transform.childCount; a++)
             {
                 var spawnscript=TempleSpawners.transform.GetChild(a).GetComponent<SpawnerScript>();
-                spawnscript.SetAmount(0);
+                spawnscript.SetAmount(5);
+                spawnscript._Enemyrange = 200f;
+                spawnscript.SpawnTime = 3;
+                spawnscript.isCrystal = false;
+                TempleSpawners.transform.GetChild(a).gameObject.SetActive(false);
             }
             
             // 스포너를 맵에 뿌리는 단계 , 미궁 혹은 다른 모드에서 사용
             {
+                
                 bool NearSpawner = false;
                 // 정해준 수량만큼만 맵 랜덤좌표에 생성.
                 // 좌표를 랜덤지정후 근처 가까운곳에 스포너가 없어야 생성
@@ -54,7 +73,8 @@ namespace _4._Scripts
                     NearSpawner = false;
                 }
             }
-
+            
+        
 
         }
         private void Update()
@@ -64,6 +84,8 @@ namespace _4._Scripts
             {
                 inventory.ManipulateWindow();
             }
+
+            
         }
     }
 }

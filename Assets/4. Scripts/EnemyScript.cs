@@ -49,8 +49,9 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-    public void Setdata(Vector3 pos) // 스폰지역 저장 (배회용)
+    public void Setdata(Vector3 pos, float tmprange) // 스폰지역 저장 (배회용)
     {
+        range = tmprange;
         originpos = pos;
         randpos = originpos;
     }
@@ -137,13 +138,13 @@ public class EnemyScript : MonoBehaviour
         {
             if (selecL > selecR)
             {
-                Instantiate(rp, _waypointR, Quaternion.identity);
+                //Instantiate(rp, _waypointR, Quaternion.identity); // 디버깅 용, 이동 위치에 빨간 구체 생성.
                 playerRigid.MovePosition(transform.position - ((transform.position - _waypointR).normalized * Time.deltaTime * _moveSpeed));
                 DilR += Time.deltaTime;
             }
             else
             {
-                Instantiate(rp, _waypointL, Quaternion.identity);
+                //Instantiate(rp, _waypointL, Quaternion.identity);
                 playerRigid.MovePosition(transform.position - ((transform.position - _waypointL).normalized * Time.deltaTime * _moveSpeed));
                 DilL += Time.deltaTime;
             }
@@ -152,12 +153,12 @@ public class EnemyScript : MonoBehaviour
         {
             if (DilL > DilR)
             {
-                Instantiate(rp, _waypointL - transform.forward, Quaternion.identity);
+                //Instantiate(rp, _waypointL - transform.forward, Quaternion.identity);
                 playerRigid.MovePosition(transform.position - ((transform.position - _waypointL).normalized * Time.deltaTime * _moveSpeed));
             }
             else
             {
-                Instantiate(rp, _waypointR - transform.forward, Quaternion.identity);
+                //Instantiate(rp, _waypointR - transform.forward, Quaternion.identity);
                 playerRigid.MovePosition(transform.position - ((transform.position - _waypointR).normalized * Time.deltaTime * _moveSpeed));
             }
         }
@@ -170,7 +171,7 @@ public class EnemyScript : MonoBehaviour
         {
             float _x = Random.Range(-5f, 5f);
             float _z = Random.Range(-5f, 5f);
-            randpos = originpos + new Vector3(_x, transform.position.y, _z);
+            randpos = originpos + new Vector3(_x, 0, _z);
             roamcd = 3f;
         }
 
@@ -204,7 +205,7 @@ public class EnemyScript : MonoBehaviour
                 }
             }
         }
-
+        print(range);
         lastdamagedtime = 0;
     }
 
@@ -243,31 +244,7 @@ public class EnemyScript : MonoBehaviour
         
     }
 
-    void Start()
-    {
-        
-        playerRigid = GetComponent<Rigidbody>();
-
-        _moveSpeed = 10f; // 적 이동속도
-
-        _noise = 0;
-        _meleecd = 1f; // 근접공격 쿨타임
-        range = 10f; // 기본 감지범위 (추격은 _range 로 넘겨준 다음 -5 + noise / 10 에 해당하는 범위안에서만 추격.)
-
-        originpos = transform.position;
-        maxhp = 100f;
-        hp = maxhp; // 현재는 체력바가 체력이 많을수록 무한히 늘어남
-        armor = 100f; // 미사용
-
-        layerMask = 1 << LayerMask.NameToLayer("Environment"); // 벽만 인식하기위한 레이어마스크
-        EnemyLayer = 1 << LayerMask.NameToLayer("Enemy"); // 다른 적만 무시하기위한 레이어마스크
-        targetbyattack = null; // 자신 또는 주변 Enemy가 공격받으면 고정타겟화시킬 공간
-        NearPlayer = false; // 주변에 Player가 없을 때 배회(Roaming)하기위한 변수
-
-        animator = transform.GetChild(1).GetComponent<Animator>();
-        lastdamagedtime = 0;
-    }
-
+    
     void Targeted() // 플레이어를 발견한 뒤 쫓아오는 단계
     {
         if (Physics.Raycast(transform.position, transform.forward, out hit, _distance, ~EnemyLayer))
@@ -296,12 +273,41 @@ public class EnemyScript : MonoBehaviour
             {
                 if (_distance < (_range - 5f) / 1.4f)
                 {
-                    _moveSpeed = 3f;
+                    _moveSpeed = 4f;
                     Goattack_BehindWall();
                 }
             }
         }
     }
+    
+    void Start()
+    {
+        
+        playerRigid = GetComponent<Rigidbody>();
+
+        _moveSpeed = 5f; // 적 이동속도
+
+        _noise = 0;
+        _meleecd = 1f; // 근접공격 쿨타임
+        //range = 10f; // 기본 감지범위 (추격은 _range 로 넘겨준 다음 -5 + noise / 10 에 해당하는 범위안에서만 추격.)
+
+        originpos = transform.position;
+        maxhp = 100f;
+        hp = maxhp; // 현재는 체력바가 체력이 많을수록 무한히 늘어남
+        armor = 100f; // 미사용
+
+        layerMask = 1 << LayerMask.NameToLayer("Environment"); // 벽만 인식하기위한 레이어마스크
+        EnemyLayer = 1 << LayerMask.NameToLayer("Enemy"); // 다른 적만 무시하기위한 레이어마스크
+        targetbyattack = null; // 자신 또는 주변 Enemy가 공격받으면 고정타겟화시킬 공간
+        NearPlayer = false; // 주변에 Player가 없을 때 배회(Roaming)하기위한 변수
+
+        animator = transform.GetChild(1).GetComponent<Animator>();
+        lastdamagedtime = 0;
+
+        roamcd = 1f;
+    }
+
+    
 
     // Update is called once per frame
     void Update()
@@ -345,34 +351,38 @@ public class EnemyScript : MonoBehaviour
                         {
                             enemychasingplayer += cols[i].GetComponent<EnemyScript>().Ischasing();
                         }
-                        if (cols[i].tag == "Player")
+                        if (cols[i].tag == "Player" )
                         {
-                            NearPlayer = true;
-                            target = cols[i].gameObject.transform;
-                            // 플레이어가 가진(발생시킨) noise를 지속적으로 감지.
-                            // noise는 Player스크립트 내에서 지속적으로 감소해서 적도 인식하다가 멈출 수 있음
-                            _noise = cols[i].gameObject.GetComponent<_4._Scripts.Player>().GetNoise();
-
-                            // 기본 범위(range)와 그냥 비교해서 더 크면 노이즈/10 만큼 일시적으로 추격범위(_range) 증가
-                            if (_noise > range) { _range = range + (_noise / 10); }
-
-                            //플레이어와의 거리(_distance)가 추격범위(_range-5) 이내로 들어오면 상황에따라 추격 함수들 실행
-                            _direction = transform.position - target.position;
-                            _distance = _direction.magnitude;
-                            if (_distance < _range - 5f)
+                            if (cols[i].GetComponent<_4._Scripts.Player>()._isAlive)
                             {
-                                if (enemychasingplayer > 7)
+                                NearPlayer = true;
+                                target = cols[i].gameObject.transform;
+                                // 플레이어가 가진(발생시킨) noise를 지속적으로 감지.
+                                // noise는 Player스크립트 내에서 지속적으로 감소해서 적도 인식하다가 멈출 수 있음
+                                _noise = cols[i].gameObject.GetComponent<_4._Scripts.Player>().GetNoise();
+
+                                // 기본 범위(range)와 그냥 비교해서 더 크면 노이즈/10 만큼 일시적으로 추격범위(_range) 증가
+                                if (_noise > range) { _range = range + (_noise / 10); }
+
+                                //플레이어와의 거리(_distance)가 추격범위(_range-5) 이내로 들어오면 상황에따라 추격 함수들 실행
+                                _direction = transform.position - target.position;
+                                _distance = _direction.magnitude;
+                                if (_distance < _range - 5f)
                                 {
-                                    _moveSpeed = 2f;
+                                    if (enemychasingplayer > 7)
+                                    {
+                                        _moveSpeed = 7f;
+                                    }
+                                    else
+                                    {
+                                        _moveSpeed = 7f;
+                                    }
+                                    transform.LookAt(target);
+                                    Targeted();
+                                    chasing = true;
                                 }
-                                else
-                                {
-                                    _moveSpeed = 5f;
-                                }
-                                transform.LookAt(target);
-                                Targeted();
-                                chasing = true;
                             }
+                            
                         }
 
                     }
@@ -382,12 +392,16 @@ public class EnemyScript : MonoBehaviour
             //직접적인 플레이어 전달 있을 때 (피격 또는 주변 적으로부터)
             else
             {
-                NearPlayer = true;
-                chasing = true;
-                _direction = transform.position - targetbyattack.position;
-                _distance = _direction.magnitude;
-                transform.LookAt(targetbyattack);
-                Targeted();
+                if (targetbyattack.GetComponent<_4._Scripts.Player>()._isAlive)
+                {
+                    NearPlayer = true;
+                    chasing = true;
+                    _direction = transform.position - targetbyattack.position;
+                    _distance = _direction.magnitude;
+                    transform.LookAt(targetbyattack);
+                    Targeted();
+                }
+                
             }
         }
         

@@ -17,6 +17,8 @@ namespace _4._Scripts
 
         private GameObject Flash;
         private bool Flashis;
+
+        public bool _isAlive;
         //public float[] _flashint;
 
         [SerializeField] 
@@ -27,27 +29,34 @@ namespace _4._Scripts
 
         public AudioClip shootsoundtouse,gunshootsound1,gunshootsound2,gunshootsound3,gunshootsound4
             ,reloadsoundtouse,gunreloadsound1,gunreloadsound2,gunreloadsound3,gunreloadsound4
-            ,dashsound,buttonsound,reloadstartsound;
+            ,dashsound,buttonsound,reloadstartsound,lastammosound,crystalGetsound,deathsound
+            ,deathbgmsound;
         public AudioSource audiosource;
 
         public int selectedweapon;
         public int ammo,ammo_magazine,AMMO_MAX_MAG;
         [SerializeField] private GameObject UIobj;
         public UIManager UIscript;
+        [SerializeField] private GameObject gamemanager;
         
         public void Getknockback(Vector3 dirvec, float power)
         {
             if (_knockbackcd <= 0)
             {
                 playerRigid.AddForce(dirvec * power);
-                _knockbackcd = 0.5f;
+                
             }
         }
 
-        public void GetDamage(float dam) 
+        public void GetDamage(float dam)
         {
-            hp -= dam;
-            Debug.Log("Player Got Damage!! "+ hp + "hp remaining");
+            if (_knockbackcd <= 0)
+            {
+                hp -= dam;
+                audiosource.PlayOneShot(deathsound, 0.04f);
+                Debug.Log("Player Got Damage!! " + hp + "hp remaining");
+                _knockbackcd = 0.5f;
+            }
         }
 
         void SwitchFlash() // 플래시라이트 켜고끄기
@@ -91,6 +100,10 @@ namespace _4._Scripts
                 if (ammo_magazine > 0)
                 {
                     ammo_magazine--;
+                    if (ammo_magazine == 0)
+                    {
+                        audiosource.PlayOneShot(lastammosound,0.3f);
+                    }
                     audiosource.PlayOneShot(shootsoundtouse,0.1f);
                     var firePos = transform.position + playerRigid.transform.forward * 0.7f
                                                      + playerRigid.transform.right * 0.2f
@@ -163,9 +176,29 @@ namespace _4._Scripts
             ammo += Rand;
         }
 
+        public void GetCrystal()
+        {
+            audiosource.PlayOneShot(crystalGetsound,0.8f);
+            UIscript.mycrystal+=1;
+            UIscript.RefreshMission();
+        }
+
+        public void NearTemple()
+        {
+            UIscript.missionNumber = 3;
+            UIscript.RefreshMission();
+        }
+
+        public void EnterTemple()
+        {
+            gamemanager.GetComponent<GameManager>().PlayerEnteredTemple();
+            UIscript.missionNumber = 4;
+            UIscript.Invoke("RefreshMission",2f);
+        }
+
         private void Start()
         {
-            
+            _isAlive = true;
             _moveSpeed = UserData.MoveSpeed;
             _LMcd = 0.2f;
             _Dashcd = 0.2f;
@@ -250,86 +283,112 @@ namespace _4._Scripts
         {
             // move
 
-            var moveInput = (new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"))).normalized;
-            var moveVelocity = moveInput * _moveSpeed;
-            playerRigid.MovePosition(transform.position + moveVelocity * Time.fixedDeltaTime);
+            if (_isAlive)
+            {
 
-            // dash : 일시적으로 속도 4배 증가후 빠르게 감소. 0.35초 후(쿨타임이 0.65남을때) 원래속도로 고정
-            
-            { 
-                if (_Dashcd > 0)
+
+                var moveInput = (new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")))
+                    .normalized;
+                var moveVelocity = moveInput * _moveSpeed;
+                playerRigid.MovePosition(transform.position + moveVelocity * Time.fixedDeltaTime);
+
+                // dash : 일시적으로 속도 4배 증가후 빠르게 감소. 0.35초 후(쿨타임이 0.65남을때) 원래속도로 고정
+
                 {
-                    _Dashcd -= Time.deltaTime;
-                    if (_moveSpeed > UserData.MoveSpeed)
+                    if (_Dashcd > 0)
                     {
-                        _moveSpeed -= Time.deltaTime * 50f;
+                        _Dashcd -= Time.deltaTime;
+                        if (_moveSpeed > UserData.MoveSpeed)
+                        {
+                            _moveSpeed -= Time.deltaTime * 50f;
+                        }
+                    }
+
+                    if (_Dashcd < 0.65)
+                    {
+                        _moveSpeed = UserData.MoveSpeed * 1.2f; // AI 테스트용으로 임시로 4배속 걸어놓음
+                    }
+
+                    Dash();
+
+                }
+                // look
+                {
+                    var ray = thirdCamera.ScreenPointToRay(Input.mousePosition);
+                    var groundPlane = new Plane(Vector3.up, Vector3.up);
+                    if (groundPlane.Raycast(ray, out var rayDistance))
+                    {
+                        var point = ray.GetPoint(rayDistance);
+                        Debug.DrawLine(ray.origin, point, Color.red);
+                        var heightCorrectPoint = new Vector3(point.x, transform.position.y, point.z);
+                        transform.LookAt(heightCorrectPoint);
                     }
                 }
-                if (_Dashcd < 0.65) 
+                // Attack (Fire & Melee)
                 {
-                    _moveSpeed = UserData.MoveSpeed * 1.2f; // AI 테스트용으로 임시로 4배속 걸어놓음
-                }
-                Dash();
+                    if (_LMcd > 0)
+                    {
+                        _LMcd -= Time.deltaTime;
+                    }
 
-            }
-            // look
-            {
-                var ray = thirdCamera.ScreenPointToRay(Input.mousePosition);
-                var groundPlane = new Plane(Vector3.up, Vector3.up);
-                if (groundPlane.Raycast(ray, out var rayDistance))
-                {
-                    var point = ray.GetPoint(rayDistance);
-                    Debug.DrawLine(ray.origin, point, Color.red);
-                    var heightCorrectPoint = new Vector3(point.x, transform.position.y, point.z);
-                    transform.LookAt(heightCorrectPoint);
-                }
-            }
-            // Attack (Fire & Melee)
-            {
-                if (_LMcd > 0)
-                {
-                    _LMcd -= Time.deltaTime;
-                }
-                if (_RMcd > 0)
-                {
-                    _RMcd -= Time.deltaTime;
-                }
-                if (delaytime > 0)
-                {
-                    delaytime -= Time.deltaTime;
-                }
-                Fire();
-                Melee();
-                Reload();
-            }
-            // Weapon Change Input
-            {
-                var wheelInput = Input.GetAxis("Mouse ScrollWheel");
+                    if (_RMcd > 0)
+                    {
+                        _RMcd -= Time.deltaTime;
+                    }
 
-            }
-            //Noise
-            {
-                if (noise > 0)
-                {
-                    noise -= Time.deltaTime * 20f;
+                    if (delaytime > 0)
+                    {
+                        delaytime -= Time.deltaTime;
+                    }
+
+                    Fire();
+                    Melee();
+                    Reload();
                 }
-            }
-            //Flashlight
-            {
-                SwitchFlash();
-            }
-            //넉백면역 쿨타임
-            if (_knockbackcd > 0)
-            {
-                _knockbackcd -= Time.deltaTime;
+                // Weapon Change Input
+                {
+                    var wheelInput = Input.GetAxis("Mouse ScrollWheel");
+
+                }
+                //Noise
+                {
+                    if (noise > 0)
+                    {
+                        noise -= Time.deltaTime * 20f;
+                    }
+                }
+                //Flashlight
+                {
+                    SwitchFlash();
+                }
+                //넉백면역 쿨타임
+                if (_knockbackcd > 0)
+                {
+                    _knockbackcd -= Time.deltaTime;
+                }
             }
 
             if (Input.GetKey(KeyCode.Escape))
             {
-                SceneManager.LoadScene((1));
+                SceneManager.LoadScene((0));
             }
-            
+            if (Input.GetKey(KeyCode.F12))
+            {
+                GetDamage(100);
+            }
 
+            if (hp <= 0 && _isAlive)
+            {
+                audiosource.PlayOneShot(deathbgmsound,1f);
+                _isAlive = false;
+                Flash.GetComponent<Light>().intensity = 0;
+                Flashis = false;
+                UIscript.GameOver();
+                transform.GetChild(1).gameObject.SetActive(false);
+                transform.GetChild(3).gameObject.SetActive(false);
+                transform.GetChild(4).gameObject.SetActive(true);
+                //SceneManager.LoadScene(3);
+            }
         }
     }
 }

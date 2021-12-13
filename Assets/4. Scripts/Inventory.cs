@@ -25,7 +25,7 @@ namespace _4._Scripts
         {
             if (isOpen) return;
             isOpen = true;
-            myInventory.SetActive(true);
+            //myInventory.SetActive(true);
         }
 
         private void Close()

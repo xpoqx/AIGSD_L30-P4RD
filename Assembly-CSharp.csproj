@@ -12,7 +12,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{f188cefb-5fe2-af14-c61e-30977e83146c}</ProjectGuid>
+    <ProjectGuid>{4a3e2fbe-7d4a-52cf-fb85-77175e84e8fc}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -53,6 +53,8 @@
      <Compile Include="Assets\2. Externals\Scripts\SimpleCameraController.cs" />
      <Compile Include="Assets\2. Externals\TutorialInfo\Scripts\Readme.cs" />
      <Compile Include="Assets\4. Scripts\Bullet.cs" />
+     <Compile Include="Assets\4. Scripts\CrystalScript.cs" />
+     <Compile Include="Assets\4. Scripts\DoorWallScript.cs" />
      <Compile Include="Assets\4. Scripts\Enemy.cs" />
      <Compile Include="Assets\4. Scripts\EnemyParentScript.cs" />
      <Compile Include="Assets\4. Scripts\EnemyScript.cs" />
@@ -67,6 +69,7 @@
      <Compile Include="Assets\4. Scripts\RPscript.cs" />
      <Compile Include="Assets\4. Scripts\SelectWeaponScript.cs" />
      <Compile Include="Assets\4. Scripts\SpawnerScript.cs" />
+     <Compile Include="Assets\4. Scripts\TempleDoor.cs" />
      <Compile Include="Assets\4. Scripts\UIManager.cs" />
      <Compile Include="Assets\4. Scripts\UserData.cs" />
      <Compile Include="Assets\4. Scripts\W_statscript.cs" />
@@ -80,127 +83,127 @@
      <None Include="Assets\MegaPack1Lite\RomanCityPack1Lite\README.txt" />
      <None Include="Assets\MegaPack1Lite\ToolsAndWeapons\README.txt" />
  <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Cinemachine">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Animation.Runtime">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.PixelPerfect.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.RenderPipelines.Universal.Shaders">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VSCode.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.RenderPipelines.Core.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.RenderPipelines.Core.Runtime">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.SpriteShape.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.SpriteShape.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.SpriteShape.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Path.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Path.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Path.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.RenderPipelines.Universal.Runtime">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="Unity.RenderPipelines.Universal.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Timeline">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Animation.Triangle.Runtime">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Animation.Triangle.Runtime.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Animation.Triangle.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="PsdPlugin">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/PsdPlugin.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/PsdPlugin.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Postprocessing.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Rider.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Mathematics">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Psdimporter.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Psdimporter.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Psdimporter.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.InternalAPIEngineBridge.001">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Sprite.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Common.Runtime">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Common.Runtime.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Common.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Postprocessing.Runtime">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Tilemap.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.SpriteShape.Runtime">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.SpriteShape.Runtime.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.SpriteShape.Runtime.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.PixelPerfect">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.PixelPerfect.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.PixelPerfect.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Animation.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Animation.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Animation.Editor.dll</HintPath>
  </Reference>
  <Reference Include="com.unity.cinemachine.editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.VisualStudio.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.ShaderGraph.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.Mathematics.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
  </Reference>
  <Reference Include="Unity.TextMeshPro">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
  </Reference>
  <Reference Include="Unity.2D.Common.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.2D.Common.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.2D.Common.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Unity.InternalAPIEditorBridge.001">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.001.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.001.dll</HintPath>
  </Reference>
  <Reference Include="Unity.PlasticSCM.Editor">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.UI">
- <HintPath>E:/UnityE/14_leopard_1212_1650_map/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+ <HintPath>E:/UnityE/16_leopard_1212_2130/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine">
  <HintPath>E:/UnityE/Engines/2019.4.32f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
